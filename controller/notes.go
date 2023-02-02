@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"tic3001-go-server/common/dto"
 	"tic3001-go-server/service"
+	"tic3001-go-server/validation"
 )
 
 type notesController struct{}
@@ -31,6 +32,11 @@ func (controller *notesController) Create(c *gin.Context) {
 	}
 
 	log.Info("notes form: ", form)
+	err = validation.NotesValidationService.FormChecker(*form)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, dto.GetClientParamErrorRespDto(err.Error()))
+		return
+	}
 
 	service.NotesService.Create(*form)
 
@@ -48,6 +54,18 @@ func (controller *notesController) Update(c *gin.Context) {
 
 	log.Info("notes form: ", form)
 
+	err = validation.NotesValidationService.FormChecker(*form)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, dto.GetClientParamErrorRespDto(err.Error()))
+		return
+	}
+
+	err = validation.NotesValidationService.EntityExistedChecker(form.Id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, dto.GetClientParamErrorRespDto(err.Error()))
+		return
+	}
+
 	service.NotesService.Update(*form)
 
 	c.JSON(http.StatusOK, dto.GetSuccessRespDto(nil))
@@ -61,6 +79,12 @@ func (controller *notesController) Delete(c *gin.Context) {
 	}
 
 	log.Info("id: ", id)
+
+	err := validation.NotesValidationService.EntityExistedChecker(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, dto.GetClientParamErrorRespDto(err.Error()))
+		return
+	}
 
 	service.NotesService.Delete(id)
 
