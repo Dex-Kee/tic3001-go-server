@@ -1,15 +1,42 @@
-name: CI
+name: Build and Test
 
 on: [push]
 
 jobs:
-  builds:
+
+  test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Run the test script
-        run: echo "run test script"
-      - name: Run script with multi command
-        run: |
-          echo "test message01"
-          echo "test message02"
+      - name: Set up Go Env
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Install dependency
+        run: go get .
+
+      - name: Run Unit tests
+        run: go test -v ./...
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Install dependency
+        run: go get .
+
+      - name: Build
+        run: go build
