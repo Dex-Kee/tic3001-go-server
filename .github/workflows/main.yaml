@@ -1,0 +1,15 @@
+name: CI
+
+on: [push]
+
+jobs:
+  builds:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run the test script
+        run: echo "run test script"
+      - name: Run script with multi command
+        run: |
+          echo "test message01"
+          echo "test message02"
