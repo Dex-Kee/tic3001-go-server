@@ -68,7 +68,7 @@ func TestPostWithSuccess(t *testing.T) {
 	// query again, check if content match
 	m := getData(engine)
 	assert.Equal(t, "tic3002 assignment", m["name"])
-	assert.Equal(t, "assignment description", m["description"])
+	assert.Equal(t, "assignment descriptionxxx", m["description"])
 
 	t.Cleanup(func() {
 		clearDataSet(engine)
