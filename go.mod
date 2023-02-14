@@ -4,6 +4,8 @@ go 1.18
 
 require github.com/safeie/goconfig v0.0.0-20190902083157-5e9717fd4873
 
+require github.com/golang-jwt/jwt/v4 v4.4.3 // indirect
+
 require (
 	github.com/antonfisher/nested-logrus-formatter v1.3.1 // indirect
 	github.com/cosmtrek/air v1.41.0 // indirect
