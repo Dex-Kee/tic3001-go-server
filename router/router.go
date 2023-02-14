@@ -6,14 +6,26 @@ import (
 	"tic3001-go-server/common/constant"
 	"tic3001-go-server/common/dto"
 	"tic3001-go-server/controller"
+	"tic3001-go-server/middleware"
 )
 
 func Register(engine *gin.Engine) {
 	// register no route
 	registerNoRoute(engine)
+
 	// register api
 	api := engine.Group("/api")
+	api.Use(middleware.AuthFileter.ValidateResource)
+	registerAuthAPI(api)
+	registerUserAPI(api)
 	registerNotesAPI(api)
+}
+
+func registerAuthAPI(group *gin.RouterGroup) {
+	auth := group.Group("/auth")
+	{
+		auth.POST("/login", controller.AuthController.Login)
+	}
 }
 
 func registerNotesAPI(group *gin.RouterGroup) {
@@ -23,6 +35,13 @@ func registerNotesAPI(group *gin.RouterGroup) {
 		notes.POST("/create", controller.NotesController.Create)
 		notes.PUT("/update", controller.NotesController.Update)
 		notes.DELETE("/delete", controller.NotesController.Delete)
+	}
+}
+
+func registerUserAPI(group *gin.RouterGroup) {
+	user := group.Group("/user")
+	{
+		user.DELETE("/delete", controller.UserController.DeleteUser)
 	}
 }
 

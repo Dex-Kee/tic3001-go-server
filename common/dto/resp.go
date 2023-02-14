@@ -8,6 +8,14 @@ type ResponseDto struct {
 	Data interface{} `json:"data"`
 }
 
+func NewResponseDto(code int, msg string, data interface{}) ResponseDto {
+	return ResponseDto{
+		Code: code,
+		Msg:  msg,
+		Data: data,
+	}
+}
+
 func GetSuccessRespDto(data interface{}) ResponseDto {
 	if data == nil {
 		data = ""
