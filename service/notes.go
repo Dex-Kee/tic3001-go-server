@@ -2,12 +2,16 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
+	"sort"
+	"strings"
 	"tic3001-go-server/common/dto"
 	"tic3001-go-server/entity"
+	"time"
 )
 
 type notesService struct{}
@@ -77,14 +81,40 @@ func generateRawDataSet() []entity.Notes {
 }
 
 func (s *notesService) List(keyword string) []dto.NotesDto {
-	dtos := make([]dto.NotesDto, 0)
+	fmt.Printf("keyword: %s", keyword)
 	// query from db
+	keys := make([]string, 0)
 	for _, e := range db {
-		dtos = append(dtos, dto.NotesDto{
+		// not enter key, collect all keys
+		if keyword == "" {
+			keys = append(keys, e.Id)
+		} else {
+			if strings.Contains(e.Name, keyword) {
+				keys = append(keys, e.Id)
+			}
+		}
+	}
+	return s.getSortedNotesByCreateDate(true, keys)
+}
+
+func (s *notesService) getSortedNotesByCreateDate(desc bool, keys []string) []dto.NotesDto {
+	sort.SliceStable(keys, func(i, j int) bool {
+		if desc {
+			return db[keys[i]].CreateDate > db[keys[j]].CreateDate
+		}
+		return db[keys[i]].CreateDate < db[keys[j]].CreateDate
+	})
+
+	dtos := make([]dto.NotesDto, len(keys))
+	for i, k := range keys {
+		e := db[k]
+		notesDto := dto.NotesDto{
 			Id:          e.Id,
 			Name:        e.Name,
 			Description: e.Description,
-		})
+			CreateDate:  e.CreateDate,
+		}
+		dtos[i] = notesDto
 	}
 	return dtos
 }
@@ -94,6 +124,7 @@ func (s *notesService) Create(form dto.NotesForm) {
 		Id:          uuid.New().String(),
 		Name:        form.Name,
 		Description: form.Description,
+		CreateDate:  time.Now().Format("2006-01-02 15:04:05"),
 	}
 	db[e.Id] = &e
 	go s.persistData()

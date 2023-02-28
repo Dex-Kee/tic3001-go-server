@@ -14,10 +14,10 @@ type authFilter struct{}
 var AuthFileter = new(authFilter)
 
 func (filter authFilter) ValidateResource(c *gin.Context) {
-	resoucePath := c.FullPath()
+	resourcePath := c.FullPath()
 
 	// login api, pass
-	if resoucePath == "/api/auth/login" {
+	if resourcePath == "/api/auth/login" {
 		c.Next()
 		return
 	}
@@ -44,8 +44,8 @@ func (filter authFilter) ValidateResource(c *gin.Context) {
 
 	// for other roles, check accessible resource
 	resourceMap := service.AuthService.FindAccessibleResourceByRole(role)
-	if ok, _ := resourceMap[resoucePath]; !ok {
-		log.Infof("request uri: [%s] is denial by role of user [%s]", resoucePath, role)
+	if ok, _ := resourceMap[resourcePath]; !ok {
+		log.Infof("request uri: [%s] is denial by role of user [%s]", resourcePath, role)
 		c.AbortWithStatusJSON(http.StatusUnauthorized,
 			dto.NewResponseDto(constant.RespCodeInvalidResourceAccess, constant.RespMsgInvalidResourceAccess, ""))
 		return
