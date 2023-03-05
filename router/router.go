@@ -6,6 +6,7 @@ import (
 	"tic3001-go-server/common/constant"
 	"tic3001-go-server/common/dto"
 	"tic3001-go-server/controller"
+	"tic3001-go-server/middleware"
 )
 
 func Register(engine *gin.Engine) {
@@ -14,7 +15,7 @@ func Register(engine *gin.Engine) {
 
 	// register api
 	api := engine.Group("/api")
-	// api.Use(middleware.AuthFileter.ValidateResource)
+	api.Use(middleware.AuthFileter.ValidateResource)
 	registerAuthAPI(api)
 	registerUserAPI(api)
 	registerNotesAPI(api)
