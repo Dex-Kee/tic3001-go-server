@@ -25,7 +25,7 @@ func init() {
 	// fake data for now
 	// data := generateDataSet()
 	// for i := range data {
-	// 	db[data[i].Id] = &data[i]
+	// 	database[data[i].Id] = &data[i]
 	// }
 	initDataSet()
 }
@@ -82,7 +82,7 @@ func generateRawDataSet() []entity.Notes {
 
 func (s *notesService) List(keyword string) []dto.NotesDto {
 	fmt.Printf("keyword: %s", keyword)
-	// query from db
+	// query from database
 	keys := make([]string, 0)
 	for _, e := range db {
 		// not enter key, collect all keys

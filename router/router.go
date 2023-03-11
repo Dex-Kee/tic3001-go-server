@@ -6,7 +6,6 @@ import (
 	"tic3001-go-server/common/constant"
 	"tic3001-go-server/common/dto"
 	"tic3001-go-server/controller"
-	"tic3001-go-server/middleware"
 )
 
 func Register(engine *gin.Engine) {
@@ -15,7 +14,7 @@ func Register(engine *gin.Engine) {
 
 	// register api
 	api := engine.Group("/api")
-	api.Use(middleware.AuthFileter.ValidateResource)
+	// api.Use(middleware.AuthFileter.ValidateResource)
 	registerAuthAPI(api)
 	registerUserAPI(api)
 	registerNotesAPI(api)
@@ -41,6 +40,8 @@ func registerNotesAPI(group *gin.RouterGroup) {
 func registerUserAPI(group *gin.RouterGroup) {
 	user := group.Group("/user")
 	{
+		user.GET("/generate-mock-data", controller.UserController.GenerateUserTestData)
+		user.GET("/list/mock", controller.UserController.FindMockUser)
 		user.DELETE("/delete", controller.UserController.DeleteUser)
 	}
 }

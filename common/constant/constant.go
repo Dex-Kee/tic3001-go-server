@@ -21,4 +21,7 @@ const (
 	// auth
 	TokenIssuer           = "app"
 	TokenValidityDuration = time.Minute * 10
+
+	// redisKey
+	MockUserListRedisKey = "app:mock:user:list"
 )
