@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"math"
 	"net/http"
 	"tic3001-go-server/common/dto"
 	"tic3001-go-server/service"
@@ -17,8 +18,10 @@ func (controller userController) GenerateUserTestData(c *gin.Context) {
 }
 
 func (controller userController) FindMockUser(c *gin.Context) {
-	service.UserService.FindMockUser()
-	c.JSON(http.StatusOK, dto.GetSuccessRespDto(""))
+	mockUsers := service.UserService.FindMockUser()
+	// to prevent the crash of browser, only take the first 1k element
+	size := int(math.Min(float64(len(mockUsers)), 1000))
+	c.JSON(http.StatusOK, dto.GetSuccessRespDto(mockUsers[0:size+1]))
 }
 
 func (controller userController) DeleteUser(c *gin.Context) {
